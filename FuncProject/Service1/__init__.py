@@ -2,23 +2,15 @@ import logging
 
 import azure.functions as func
 
+import requests
+
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
 
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
-
-    if name:
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
-    else:
-        return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
-        )
+    numbers = requests.get('https://gttofuncapp.azurewebsites.net/api/service2?code=m5vje9BPa5YH9pvMAdBmrVpDN0LV7tpS6w4YXMZabVwR0W568J72MQ==').text
+    letters = requests.get('https://gttofuncapp.azurewebsites.net/api/service3?code=hQxHDw3MtlXm5WrcMA9cQbaBCm2EVSGa1xfRkacEA3GJr5tkovaKPA==').text
+    
+    return func.HttpResponse(
+        str(numbers.text + letters.text),
+        status_code=200
+    )
